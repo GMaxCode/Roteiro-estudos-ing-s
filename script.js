@@ -18,19 +18,73 @@ const D=[
 ["Sábado","Revisão e vocabulário",[[10,"Flashcards: revise tudo da semana.",3],[10,"Revise as 70+ palavras da lista da semana: fale cada uma dentro de uma frase sua.",3],[10,"Roleplay livre com a IA, sem script, sobre {t}.",3]]],
 ["Domingo","Imersão leve",[[20,"Assista a série, vídeo ou ouça podcast por prazer, em inglês, sem pressão. Não pare para estudar.",0],[10,"Diário falado: fale 1 minuto sobre sua semana, em inglês, sem traduzir antes.",3]]]
 ];
+const THEMES=[
+{id:"dark",name:"Roxo noturno",unlockAt:0,icon:"🌙"},
+{id:"light",name:"Lavanda clara",unlockAt:0,icon:"☁"},
+{id:"summer",name:"Verão tropical",unlockAt:1000,icon:"☀"},
+{id:"rain",name:"Chuva noturna",unlockAt:2000,icon:"🌧"},
+{id:"nature",name:"Natureza",unlockAt:3000,icon:"🌿"},
+{id:"sunset",name:"Pôr do sol",unlockAt:4000,icon:"🌇"},
+{id:"aurora",name:"Aurora boreal",unlockAt:5000,icon:"🌌"},
+{id:"ocean",name:"Oceano",unlockAt:6000,icon:"🌊"}
+];
 const $=id=>document.getElementById(id);
 let currentWeek=0,currentDay=null,progress=loadProgress(),timerSeconds=25*60,timerId=null;
 let quizDeck=[],quizIndex=0,quizCorrect=0,quizAnswered=0,quizQuestion=null,quizOptions=[];
+let gamification=loadGamification();
 
 function setStatus(message,isError){const status=$("saveStatus");status.textContent=message;status.classList.toggle("error",Boolean(isError))}
 function loadProgress(){try{const saved=JSON.parse(localStorage.getItem("ing")||"{}");return saved&&typeof saved==="object"&&!Array.isArray(saved)?saved:{}}catch(error){console.error("Não foi possível ler o progresso salvo.",error);setStatus("Não foi possível ler o progresso salvo.",true);return{}}}
 function saveProgress(){try{localStorage.setItem("ing",JSON.stringify(progress));setStatus("Progresso salvo neste aparelho.",false)}catch(error){console.error("Não foi possível salvar o progresso.",error);setStatus("Não foi possível salvar. Verifique o armazenamento do navegador.",true)}}
+function saveGamification(){try{localStorage.setItem("ing-gamification",JSON.stringify(gamification));return true}catch(error){console.error("Não foi possível salvar os pontos e temas.",error);setStatus("Não foi possível salvar os pontos. Verifique o armazenamento do navegador.",true);return false}}
 function escapeHtml(value){return String(value).replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]))}
 function wordsFor(week){return week.v.split(";").map(entry=>{const separator=entry.indexOf("=");return{english:entry.slice(0,separator),portuguese:entry.slice(separator+1)}})}
 function completedInWeek(weekIndex){return D.reduce((total,_,dayIndex)=>total+(progress[weekIndex+"-"+dayIndex]===true?1:0),0)}
 function totalCompleted(){return Wk.reduce((total,_,weekIndex)=>total+completedInWeek(weekIndex),0)}
+function initialGamification(){
+let points=0;
+const awardedDays=[],awardedWeeks=[];
+Wk.forEach((_,weekIndex)=>{
+D.forEach((__,dayIndex)=>{
+if(progress[weekIndex+"-"+dayIndex]===true){points+=30;awardedDays.push("1:"+weekIndex+"-"+dayIndex)}
+});
+if(completedInWeek(weekIndex)===D.length){points+=100;awardedWeeks.push("1:"+weekIndex)}
+});
+return{points,cycle:1,awardedDays,awardedWeeks}
+}
+function loadGamification(){
+try{
+const raw=localStorage.getItem("ing-gamification");
+if(raw===null)return initialGamification();
+const saved=JSON.parse(raw);
+if(!saved||!Number.isSafeInteger(saved.points)||saved.points<0)throw new Error("Dados de pontos inválidos.");
+return{points:saved.points,cycle:Number.isSafeInteger(saved.cycle)&&saved.cycle>0?saved.cycle:1,awardedDays:Array.isArray(saved.awardedDays)?saved.awardedDays.filter(item=>typeof item==="string"):[],awardedWeeks:Array.isArray(saved.awardedWeeks)?saved.awardedWeeks.filter(item=>typeof item==="string"):[]}
+}catch(error){
+console.error("Não foi possível ler os pontos salvos.",error);
+setStatus("Não foi possível ler os pontos salvos; o progresso anterior será preservado.",true);
+return initialGamification()
+}
+}
 function phaseFor(weekIndex){if(weekIndex<3)return"Fundamentos";if(weekIndex<6)return"Comunicação";return"Mais autonomia"}
-function renderProgress(){const completed=totalCompleted(),percent=Math.round(completed/(Wk.length*D.length)*100);$("p").textContent=percent+"%";$("pb").style.width=percent+"%";$("pt").textContent=completed+" de "+(Wk.length*D.length)+" dias concluídos";$("progressBar").setAttribute("aria-valuenow",String(percent));$("weekMetric").textContent="Semana "+String(currentWeek+1).padStart(2,"0")+" / "+String(Wk.length).padStart(2,"0");$("phasePill").textContent=phaseFor(currentWeek)}
+function renderProgress(){const completed=totalCompleted(),percent=Math.round(completed/(Wk.length*D.length)*100);$("p").textContent=percent+"%";$("pb").style.width=percent+"%";$("pt").textContent=completed+" de "+(Wk.length*D.length)+" dias concluídos";$("progressBar").setAttribute("aria-valuenow",String(percent));$("weekMetric").textContent="Semana "+String(currentWeek+1).padStart(2,"0")+" / "+String(Wk.length).padStart(2,"0");$("phasePill").textContent=phaseFor(currentWeek);$("newCycleButton").hidden=completed!==Wk.length*D.length}
+function renderRewards(){
+const points=gamification.points;
+const nextTheme=THEMES.find(theme=>theme.unlockAt>points);
+const progressInTier=nextTheme?points-(nextTheme.unlockAt-1000):1000;
+$("headerPoints").textContent=points.toLocaleString("pt-BR");
+$("rewardPoints").textContent=points.toLocaleString("pt-BR");
+$("pointsProgressFill").style.width=Math.min(100,progressInTier/10)+"%";
+$("pointsProgress").setAttribute("aria-valuenow",String(Math.min(1000,progressInTier)));
+$("nextThemeText").textContent=nextTheme?"Faltam "+(nextTheme.unlockAt-points).toLocaleString("pt-BR")+" pontos para desbloquear "+nextTheme.name+".":"Todos os temas atuais estão desbloqueados. Continue estudando para acumular pontos.";
+$("cycleText").textContent="Ciclo "+gamification.cycle+" · complete as 8 semanas para começar outra jornada e continuar acumulando pontos.";
+const selectedTheme=document.documentElement.dataset.theme;
+$("themeOptions").innerHTML=THEMES.map(theme=>{
+const unlocked=points>=theme.unlockAt,selected=selectedTheme===theme.id;
+const status=unlocked?(theme.unlockAt===0?"Disponível":"Desbloqueado"):"🔒 "+theme.unlockAt.toLocaleString("pt-BR")+" pontos";
+const title=unlocked?"Usar o tema "+theme.name:"Desbloqueie com "+theme.unlockAt.toLocaleString("pt-BR")+" pontos";
+return"<button class='theme-choice"+(selected?" selected":"")+"' type='button' data-theme-choice='"+theme.id+"' aria-pressed='"+String(selected)+"' "+(unlocked?"":"disabled")+" title='"+escapeHtml(title)+"'><span class='theme-swatch swatch-"+theme.id+"' aria-hidden='true'>"+theme.icon+"</span><span class='theme-copy'><strong>"+escapeHtml(theme.name)+"</strong><small>"+status+"</small></span></button>"
+}).join("")
+}
 function renderTabs(){const tabs=$("tabs");tabs.innerHTML="";Wk.forEach((week,index)=>{const button=document.createElement("button");button.className="week-tab";button.type="button";button.id="week-tab-"+index;button.setAttribute("role","tab");button.setAttribute("aria-controls","weekContent");button.setAttribute("aria-selected",String(index===currentWeek));button.tabIndex=index===currentWeek?0:-1;button.innerHTML="<span>SEMANA "+String(index+1).padStart(2,"0")+"</span><small>"+escapeHtml(week.t)+" · "+completedInWeek(index)+"/7</small>";button.addEventListener("click",()=>selectWeek(index));tabs.appendChild(button)})}
 function selectWeek(index){currentWeek=index;currentDay=null;renderProgress();renderTabs();renderWeek();resetQuiz();$("week-tab-"+index).focus()}
 function fillTask(text,week){return text.replace(/{t}/g,week.t.toLowerCase()).replace(/{g}/g,week.g).replace(/{q}/g,week.q)}
@@ -49,17 +103,103 @@ function resetQuiz(){quizDeck=shuffle(wordsFor(Wk[currentWeek]));quizIndex=0;qui
 function nextQuestion(){if(!quizDeck.length)quizDeck=shuffle(wordsFor(Wk[currentWeek]));if(quizIndex>=quizDeck.length){quizDeck=shuffle(wordsFor(Wk[currentWeek]));quizIndex=0}quizQuestion=quizDeck[quizIndex++];const distractors=shuffle(wordsFor(Wk[currentWeek]).filter(word=>word.english!==quizQuestion.english&&word.portuguese!==quizQuestion.portuguese)).slice(0,3);quizOptions=shuffle([quizQuestion,...distractors]);renderQuiz()}
 function renderQuiz(){let html="<div class='quiz-word'><small>Como se diz em português?</small><strong>"+escapeHtml(quizQuestion.english)+"</strong></div><div class='quiz-options'>";quizOptions.forEach((option,index)=>{html+="<button class='quiz-option' type='button' data-answer='"+index+"'>"+escapeHtml(option.portuguese)+"</button>"});html+="</div><p class='quiz-feedback' id='quizFeedback' aria-live='polite'></p><div class='quiz-footer'><span class='quiz-score'>Acertos: "+quizCorrect+" / "+quizAnswered+"</span><button class='secondary-button quiz-next' id='quizNext' type='button' hidden>Próxima palavra</button></div>";$("quizArea").innerHTML=html}
 function answerQuestion(index){const buttons=$("quizArea").querySelectorAll("[data-answer]");if(!buttons.length)return;const correct=quizOptions[index]===quizQuestion;buttons.forEach((button,buttonIndex)=>{button.disabled=true;if(quizOptions[buttonIndex]===quizQuestion)button.classList.add("correct");else if(buttonIndex===index)button.classList.add("incorrect")});quizAnswered++;if(correct)quizCorrect++;const feedback=$("quizFeedback");feedback.textContent=correct?"Muito bem! Tradução correta.":"Ainda não. A resposta é: "+quizQuestion.portuguese+".";feedback.classList.add(correct?"good":"bad");$("quizArea").querySelector(".quiz-score").textContent="Acertos: "+quizCorrect+" / "+quizAnswered;$("quizNext").hidden=false}
-function setTheme(theme,persist){document.documentElement.dataset.theme=theme;$("themeToggle").textContent=theme==="dark"?"☀ Tema claro":"☾ Tema escuro";$("themeToggle").setAttribute("aria-pressed",String(theme==="light"));if(persist){try{localStorage.setItem("ing-theme",theme)}catch(error){console.error("Não foi possível salvar a preferência de tema.",error);setStatus("Tema aplicado, mas a preferência não pôde ser salva.",true)}}}
-function loadTheme(){try{return localStorage.getItem("ing-theme")==="light"?"light":"dark"}catch(error){console.error("Não foi possível ler a preferência de tema.",error);return"dark"}}
+function setTheme(theme,persist){
+const isLightTheme=theme==="light"||theme==="summer";
+document.documentElement.dataset.theme=theme;
+$("themeToggle").textContent=isLightTheme?"☾ Tema escuro":"☀ Tema claro";
+$("themeToggle").setAttribute("aria-pressed",String(isLightTheme));
+if(persist){
+try{localStorage.setItem("ing-theme",theme)}
+catch(error){console.error("Não foi possível salvar a preferência de tema.",error);setStatus("Tema aplicado, mas a preferência não pôde ser salva.",true)}
+}
+}
+function loadTheme(){
+try{
+const saved=localStorage.getItem("ing-theme");
+const theme=THEMES.find(item=>item.id===saved);
+return theme&&theme.unlockAt<=gamification.points?theme.id:"dark"
+}catch(error){console.error("Não foi possível ler a preferência de tema.",error);return"dark"}
+}
+function celebrate(message){
+document.querySelectorAll(".celebration-toast,.confetti-layer").forEach(element=>element.remove());
+const toast=document.createElement("div");
+toast.className="celebration-toast";
+toast.setAttribute("role","status");
+toast.textContent=message;
+document.body.appendChild(toast);
+window.setTimeout(()=>toast.remove(),4500);
+if(window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+const layer=document.createElement("div");
+layer.className="confetti-layer";
+layer.setAttribute("aria-hidden","true");
+const palette=["--purple","--purple-light","--blue","--green"].map(token=>getComputedStyle(document.documentElement).getPropertyValue(token).trim()).filter(Boolean);
+for(let index=0;index<54;index++){
+const piece=document.createElement("span");
+piece.className="confetti-piece";
+piece.style.left=Math.random()*100+"%";
+piece.style.setProperty("--drift",(Math.random()*240-120)+"px");
+piece.style.setProperty("--fall-time",2+Math.random()*1.5+"s");
+piece.style.setProperty("--fall-delay",Math.random()*.6+"s");
+piece.style.backgroundColor=palette[index%palette.length];
+piece.style.width=6+Math.random()*7+"px";
+piece.style.height=8+Math.random()*10+"px";
+piece.style.borderRadius=index%2?"50%":"2px";
+layer.appendChild(piece)
+}
+document.body.appendChild(layer);
+window.setTimeout(()=>layer.remove(),4500)
+}
+function toggleDayCompletion(key){
+if(progress[key]===true){
+delete progress[key];
+saveProgress();
+renderProgress();renderTabs();renderWeek();renderRewards();
+setStatus("Dia desmarcado. Os pontos já conquistados permanecem.",false);
+return
+}
+progress[key]=true;
+let earned=0,weekBonus=0;
+const dayAward=gamification.cycle+":"+key;
+if(!gamification.awardedDays.includes(dayAward)){
+gamification.points+=30;
+gamification.awardedDays.push(dayAward);
+earned+=30
+}
+if(completedInWeek(currentWeek)===D.length){
+const weekAward=gamification.cycle+":"+currentWeek;
+if(!gamification.awardedWeeks.includes(weekAward)){
+gamification.points+=100;
+gamification.awardedWeeks.push(weekAward);
+earned+=100;
+weekBonus=100
+}
+}
+saveProgress();saveGamification();
+renderProgress();renderTabs();renderWeek();renderRewards();
+const congratulations=weekBonus?"Semana completa! +30 pontos pelo dia e +100 de bônus.":earned?"Parabéns! Dia concluído: +30 pontos.":"Dia concluído! Os pontos desta atividade já foram recebidos.";
+celebrate(congratulations)
+}
+function startNewCycle(){
+if(totalCompleted()!==Wk.length*D.length)return;
+if(!window.confirm("Você concluiu as 8 semanas! Começar uma nova jornada? Seus pontos e temas desbloqueados serão mantidos."))return;
+progress={};
+gamification.cycle++;
+currentWeek=0;currentDay=null;
+saveProgress();saveGamification();
+renderProgress();renderTabs();renderWeek();renderRewards();resetQuiz();
+celebrate("Nova jornada iniciada! Seus pontos continuam com você.")
+}
 function renderTimer(){const minutes=Math.floor(timerSeconds/60),seconds=timerSeconds%60;$("timerDisplay").textContent=String(minutes).padStart(2,"0")+":"+String(seconds).padStart(2,"0");$("timerToggle").textContent=timerId===null?"Começar foco":"Pausar";$("timerHint").textContent=timerSeconds===0?"Bloco concluído. Ótimo trabalho!":timerId===null?"25 minutos de foco":"Foco em andamento"}
 function toggleTimer(){if(timerId!==null){clearInterval(timerId);timerId=null;renderTimer();return}if(timerSeconds===0)timerSeconds=25*60;timerId=window.setInterval(()=>{timerSeconds--;if(timerSeconds<=0){timerSeconds=0;clearInterval(timerId);timerId=null}renderTimer()},1000);renderTimer()}
 function resetTimer(){if(timerId!==null)clearInterval(timerId);timerId=null;timerSeconds=25*60;renderTimer()}
 
 $("tabs").addEventListener("keydown",event=>{if(event.key!=="ArrowRight"&&event.key!=="ArrowLeft")return;event.preventDefault();const step=event.key==="ArrowRight"?1:-1;selectWeek((currentWeek+step+Wk.length)%Wk.length)});
-$("weekContent").addEventListener("click",event=>{const target=event.target.closest("button");if(!target)return;if(target.hasAttribute("data-day")){const index=Number(target.dataset.day);currentDay=currentDay===index?null:index;renderWeek();return}if(target.hasAttribute("data-complete-day")){const key=target.dataset.completeDay;if(progress[key]===true)delete progress[key];else progress[key]=true;saveProgress();renderProgress();renderTabs();renderWeek();return}if(target.classList.contains("word-card")){const expanded=target.getAttribute("aria-expanded")==="true";target.setAttribute("aria-expanded",String(!expanded))}});
+$("weekContent").addEventListener("click",event=>{const target=event.target.closest("button");if(!target)return;if(target.hasAttribute("data-day")){const index=Number(target.dataset.day);currentDay=currentDay===index?null:index;renderWeek();return}if(target.hasAttribute("data-complete-day")){toggleDayCompletion(target.dataset.completeDay);return}if(target.classList.contains("word-card")){const expanded=target.getAttribute("aria-expanded")==="true";target.setAttribute("aria-expanded",String(!expanded))}});
+$("themeOptions").addEventListener("click",event=>{const target=event.target.closest("[data-theme-choice]");if(!target||target.disabled)return;setTheme(target.dataset.themeChoice,true);renderRewards();setStatus("Tema "+target.querySelector("strong").textContent+" aplicado.",false)});
+$("newCycleButton").addEventListener("click",startNewCycle);
 $("weekContent").addEventListener("input",event=>{if(event.target.id!=="vocabSearch")return;const query=event.target.value.trim().toLocaleLowerCase();let visible=0;$("weekContent").querySelectorAll(".word-card").forEach(card=>{const matches=card.dataset.search.includes(query);card.hidden=!matches;if(matches)visible++});$("weekContent").querySelector(".no-results").hidden=visible>0});
 $("quizArea").addEventListener("click",event=>{const target=event.target.closest("button");if(!target)return;if(target.hasAttribute("data-answer"))answerQuestion(Number(target.dataset.answer));if(target.id==="quizNext")nextQuestion()});
-$("themeToggle").addEventListener("click",()=>setTheme(document.documentElement.dataset.theme==="dark"?"light":"dark",true));
+$("themeToggle").addEventListener("click",()=>{const currentTheme=document.documentElement.dataset.theme;setTheme(currentTheme==="light"||currentTheme==="summer"?"dark":"light",true);renderRewards()});
 $("timerToggle").addEventListener("click",toggleTimer);
 $("timerReset").addEventListener("click",resetTimer);
-setTheme(loadTheme(),false);renderProgress();renderTabs();renderWeek();resetQuiz();renderTimer();
+setTheme(loadTheme(),false);renderProgress();renderTabs();renderWeek();renderRewards();resetQuiz();renderTimer();
