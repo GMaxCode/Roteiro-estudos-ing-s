@@ -1,89 +1,31 @@
 <!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Inglês sem legenda: roteiro de 8 semanas</title>
+<title>Inglês sem legenda — seu plano do básico ao avançado</title>
+<meta name="description" content="Um roteiro interativo para estudar inglês todos os dias, praticar vocabulário e acompanhar seu progresso.">
+<meta name="theme-color" content="#090711">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap">
-<style>
-:root{--bg:#f6f5f0;--card:#fff;--ink:#17202a;--mute:#5f6b76;--line:#dcd9cf;--pri:#0f4c5c;--acc:#f2b134;--ok:#2f8f5b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121a1f;--card:#1a252c;--ink:#eceae2;--mute:#9aa7b0;--line:#2c3b44;--pri:#7cc4d4;--acc:#f2b134;--ok:#5cc48a;color-scheme:dark}}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif}
-.w{max-width:860px;margin:0 auto;padding:20px 16px 56px}
-h1{font-size:clamp(28px,6vw,44px);line-height:1.05;margin:0 0 4px;font-weight:800;letter-spacing:-.02em}
-.sub{color:var(--mute);margin:0 0 18px}
-.top{position:sticky;top:0;background:var(--bg);padding:10px 0 12px;z-index:5;border-bottom:1px solid var(--line)}
-.pct{display:flex;align-items:baseline;gap:10px}
-.pct b{font-size:44px;font-weight:800;color:var(--pri)}
-.bar{height:12px;background:var(--line);border-radius:6px;overflow:hidden;margin-top:6px}
-.bar i{display:block;height:100%;width:0;background:var(--ok);transition:width .4s}
-.tabs{display:flex;gap:8px;overflow-x:auto;padding:14px 0}
-.tabs button{flex:0 0 auto;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px 14px;font:inherit;cursor:pointer}
-.tabs button[aria-selected=true]{background:var(--pri);border-color:var(--pri);color:var(--bg)}
-.tabs small{display:block;font-size:12px;opacity:.8}
-h2{font-size:26px;margin:6px 0 2px}
-.g{background:var(--card);border-left:5px solid var(--acc);padding:10px 14px;border-radius:6px;margin:12px 0}
-h3{font-size:17px;margin:20px 0 8px}
-ul{margin:0;padding-left:20px}
-details{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 14px}
-summary{cursor:pointer;font-weight:600}
-.v{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:4px 16px;margin:10px 0 0;padding:0;list-style:none;font-size:15px}
-.v span{color:var(--mute)}
-.days{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}
-.days button{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:10px;font:inherit;text-align:left;cursor:pointer}
-.days button.done{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,var(--card))}
-.days button[aria-expanded=true]{outline:3px solid var(--acc)}
-.days small{display:block;color:var(--mute)}
-.det{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin-top:12px}
-.det h4{margin:0 0 8px;font-size:20px}
-.bl{display:grid;grid-template-columns:64px 1fr;gap:4px 12px;padding:10px 0;border-top:1px solid var(--line)}
-.bl b{color:var(--pri)}
-.bl em{color:var(--mute);font-style:normal;font-size:14px;grid-column:2}
-.ok{margin-top:12px;border:0;border-radius:10px;padding:12px 18px;font:inherit;font-weight:600;background:var(--pri);color:var(--bg);cursor:pointer}
-button:focus-visible,summary:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
-</style></head><body><div class="w">
-<div class="top"><h1>Inglês sem legenda</h1>
-<div class="pct"><b id="p">0%</b><span id="pt" class="sub" style="margin:0"></span></div>
-<div class="bar"><i id="pb"></i></div></div>
-<div class="tabs" id="tabs" role="tablist"></div>
-<main id="m"></main>
-<p class="sub">30 min por dia de estudo ativo. O resto do dia é imersão: celular em inglês, áudio do barril nos tempos mortos e frases em voz alta.</p>
+<link rel="stylesheet" href="styles.css"></head><body>
+<div class="app-shell">
+<header class="topbar">
+<a class="brand" href="#" aria-label="Inglês sem legenda, início"><span class="brand-mark">IS</span><span>INGLÊS<small>SEM LEGENDA</small></span></a>
+<div class="top-actions"><span class="save-status" id="saveStatus" role="status" aria-live="polite">Seu progresso fica salvo neste aparelho</span><button class="theme-toggle" id="themeToggle" type="button" aria-label="Alternar tema">☀ Tema claro</button></div>
+</header>
+<section class="hero" aria-labelledby="pageTitle">
+<div class="hero-copy"><p class="eyebrow">ROTEIRO DE 8 SEMANAS · COMEÇANDO NO BÁSICO</p><h1 id="pageTitle">Seu inglês cresce <span>um dia de cada vez.</span></h1><p>Uma rotina prática para construir vocabulário, compreensão e confiança para falar — sem deixar de lado o que você gosta de assistir e ouvir.</p><p class="hero-note">As 8 semanas são o começo da jornada; chegar ao avançado exige continuar praticando depois delas.</p></div>
+<div class="hero-progress"><div class="progress-heading"><span>Sua jornada</span><strong id="p">0%</strong></div><div class="progress-track" role="progressbar" id="progressBar" aria-label="Progresso das 8 semanas" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="pb"></i></div><div class="progress-caption"><span id="pt">0 de 56 dias concluídos</span><strong id="weekMetric">Semana 01 / 08</strong></div></div>
+</section>
+<main class="content-grid">
+<section class="study-column" aria-label="Roteiro de estudos">
+<div class="section-heading"><div><p class="eyebrow">SEU PLANO</p><h2>Escolha uma semana</h2></div><span class="phase-pill" id="phasePill">Fundamentos</span></div>
+<nav class="tabs" id="tabs" role="tablist" aria-label="Semanas de estudo"></nav>
+<section id="weekContent" aria-live="polite"></section>
+</section>
+<aside class="practice-column" aria-label="Ferramentas de prática">
+<section class="tool-card timer-card" aria-labelledby="timerTitle"><p class="eyebrow">PAUSA NAS DISTRAÇÕES</p><h2 id="timerTitle">Foco de hoje</h2><p class="tool-copy">Um bloco curto de estudo ativo já conta.</p><div class="timer-display" id="timerDisplay" role="timer" aria-live="off">25:00</div><p class="timer-hint" id="timerHint">25 minutos de foco</p><div class="timer-actions"><button class="primary-button" id="timerToggle" type="button">Começar foco</button><button class="secondary-button" id="timerReset" type="button">Reiniciar</button></div></section>
+<section class="tool-card quiz-card" aria-labelledby="quizTitle"><p class="eyebrow">PRÁTICA RÁPIDA</p><h2 id="quizTitle">Desafio de vocabulário</h2><p class="tool-copy">Escolha a tradução correta. As palavras são da semana selecionada.</p><div id="quizArea"></div></section>
+</aside>
+</main>
+<footer class="footer"><p>Pequenos passos consistentes constroem fluência. Faça o possível hoje e volte amanhã.</p><p>Seu progresso é salvo apenas neste navegador e neste aparelho.</p></footer>
 </div>
-<script>
-const R=["Easy English (YouTube): entrevistas de rua com legendas em inglês","Rachel’s English (YouTube): pronúncia, shadowing e chorusing","BBC 6 Minute English e The English We Speak (podcast)","Anki + Language Reactor + IA (Claude) para correção e roleplay"];
-const Wk=[
-{t:"Minha rotina",g:"Present simple: I work, she works, I don’t, does he…?",q:"daily routine in English, morning routine vlog",v:"wake up=acordar;get up=levantar;shower=banho;brush=escovar;teeth=dentes;breakfast=café da manhã;lunch=almoço;dinner=jantar;coffee=café;bread=pão;work=trabalho;study=estudar;school=escola;bus=ônibus;walk=andar a pé;drive=dirigir;home=casa;leave=sair;arrive=chegar;morning=manhã;afternoon=tarde;evening=início da noite;night=noite;early=cedo;late=tarde;always=sempre;usually=geralmente;often=frequentemente;sometimes=às vezes;never=nunca;every day=todo dia;week=semana;weekend=fim de semana;Monday=segunda-feira;Friday=sexta-feira;Sunday=domingo;time=hora;clock=relógio;alarm=despertador;sleep=dormir;tired=cansado;busy=ocupado;free=livre;phone=celular;call=ligar;text=mandar mensagem;watch=assistir;read=ler;listen=escutar;cook=cozinhar;clean=limpar;wash=lavar;buy=comprar;meet=encontrar;friend=amigo;family=família;mother=mãe;father=pai;brother=irmão;sister=irmã;wife=esposa;husband=marido;dog=cachorro;cat=gato;music=música;movie=filme;game=jogo;exercise=exercício;gym=academia;relax=relaxar;rest=descansar"},
-{t:"Casa e objetos",g:"There is / there are + preposições de lugar (in, on, under, next to)",q:"house tour in English, my room tour",v:"house=casa;apartment=apartamento;room=cômodo;kitchen=cozinha;bedroom=quarto;bathroom=banheiro;living room=sala;door=porta;window=janela;wall=parede;floor=chão;ceiling=teto;stairs=escada;table=mesa;chair=cadeira;sofa=sofá;bed=cama;pillow=travesseiro;blanket=cobertor;lamp=luminária;light=luz;mirror=espelho;shelf=prateleira;drawer=gaveta;closet=guarda-roupa;fridge=geladeira;stove=fogão;oven=forno;microwave=micro-ondas;sink=pia;plate=prato;bowl=tigela;cup=xícara;glass=copo;fork=garfo;knife=faca;spoon=colher;pan=panela;bottle=garrafa;key=chave;remote=controle remoto;TV=televisão;computer=computador;laptop=notebook;charger=carregador;cable=cabo;plug=tomada;towel=toalha;soap=sabonete;toothbrush=escova de dente;trash=lixo;broom=vassoura;box=caixa;bag=bolsa;pen=caneta;book=livro;notebook=caderno;desk=escrivaninha;under=embaixo;above=acima;next to=ao lado;between=entre;behind=atrás;in front of=na frente;on=sobre;inside=dentro;outside=fora;near=perto;far=longe;left=esquerda;right=direita"},
-{t:"Comida e restaurante",g:"Countable/uncountable, some/any e would like",q:"ordering food in English, restaurant English conversation",v:"food=comida;meal=refeição;menu=cardápio;order=pedir;waiter=garçom;bill=conta;tip=gorjeta;hungry=com fome;thirsty=com sede;full=satisfeito;delicious=delicioso;tasty=saboroso;spicy=picante;sweet=doce;sour=azedo;salty=salgado;fresh=fresco;hot=quente;cold=frio;rice=arroz;beans=feijão;meat=carne;chicken=frango;beef=carne bovina;pork=porco;fish=peixe;egg=ovo;cheese=queijo;milk=leite;butter=manteiga;salad=salada;soup=sopa;pasta=massa;sandwich=sanduíche;fries=batata frita;potato=batata;tomato=tomate;onion=cebola;garlic=alho;carrot=cenoura;lettuce=alface;apple=maçã;banana=banana;orange=laranja;grape=uva;strawberry=morango;lemon=limão;juice=suco;water=água;tea=chá;beer=cerveja;wine=vinho;sugar=açúcar;salt=sal;pepper=pimenta;oil=óleo;sauce=molho;dessert=sobremesa;cake=bolo;ice cream=sorvete;chocolate=chocolate;snack=lanche;vegetarian=vegetariano;allergic=alérgico;share=dividir;recipe=receita;ingredient=ingrediente;bake=assar;fry=fritar;boil=ferver"},
-{t:"Compras e dinheiro",g:"How much / how many, this-that-these-those e Can I…?",q:"shopping in English, at the supermarket English",v:"store=loja;mall=shopping;market=feira;supermarket=supermercado;pharmacy=farmácia;price=preço;cheap=barato;expensive=caro;discount=desconto;sale=promoção;cash=dinheiro;card=cartão;credit card=cartão de crédito;change=troco;receipt=recibo;cashier=caixa;customer=cliente;seller=vendedor;size=tamanho;small=pequeno;medium=médio;large=grande;color=cor;red=vermelho;blue=azul;green=verde;black=preto;white=branco;yellow=amarelo;shirt=camisa;T-shirt=camiseta;pants=calça;jeans=jeans;dress=vestido;skirt=saia;jacket=jaqueta;coat=casaco;shoes=sapatos;sneakers=tênis;socks=meias;hat=chapéu;glasses=óculos;wallet=carteira;backpack=mochila;try on=experimentar;fit=servir;wear=vestir;pay=pagar;spend=gastar;save=economizar;afford=poder pagar;return=devolver;exchange=trocar;refund=reembolso;deliver=entregar;online=online;cart=carrinho;worth=valer a pena;brand=marca;quality=qualidade;pair=par;gift=presente;wrap=embrulhar;open=aberto;closed=fechado;line=fila;wait=esperar;bargain=pechincha;coin=moeda;bill (money)=nota;total=total;extra=extra;wrong=errado"},
-{t:"Trabalho e tecnologia",g:"Can / can’t, have to e perguntas com Wh- (what, where, when, why, how)",q:"English at work, tech vocabulary for beginners",v:"job=emprego;company=empresa;office=escritório;boss=chefe;coworker=colega de trabalho;team=equipe;meeting=reunião;email=e-mail;message=mensagem;schedule=agenda;deadline=prazo;task=tarefa;project=projeto;report=relatório;presentation=apresentação;client=cliente;salary=salário;interview=entrevista;resume=currículo;skill=habilidade;experience=experiência;manager=gerente;remote=remoto;screen=tela;keyboard=teclado;mouse=mouse;file=arquivo;folder=pasta;document=documento;spreadsheet=planilha;data=dados;database=banco de dados;chart=gráfico;number=número;code=código;software=software;app=aplicativo;website=site;password=senha;login=entrar;download=baixar;upload=enviar;share=compartilhar;save=salvar;delete=apagar;search=buscar;update=atualizar;error=erro;fix=consertar;problem=problema;solution=solução;idea=ideia;plan=plano;goal=meta;result=resultado;learn=aprender;teach=ensinar;help=ajudar;ask=perguntar;answer=responder;explain=explicar;understand=entender;need=precisar;use=usar;build=construir;test=testar;improve=melhorar;careful=cuidadoso;fast=rápido;slow=lento"},
-{t:"Ruas, viagens e lugares",g:"Imperativo (turn left, go straight) e present continuous (I’m going…)",q:"asking for directions in English, airport English",v:"street=rua;avenue=avenida;corner=esquina;block=quadra;map=mapa;address=endereço;city=cidade;country=país;airport=aeroporto;station=estação;train=trem;subway=metrô;taxi=táxi;car=carro;bike=bicicleta;plane=avião;flight=voo;ticket=passagem;passport=passaporte;luggage=bagagem;suitcase=mala;hotel=hotel;reservation=reserva;check in=fazer check-in;check out=fazer check-out;tourist=turista;beach=praia;mountain=montanha;park=parque;museum=museu;church=igreja;bank=banco;hospital=hospital;police=polícia;restaurant=restaurante;bridge=ponte;traffic=trânsito;turn=virar;go straight=seguir em frente;stop=parar;cross=atravessar;lost=perdido;direction=direção;north=norte;south=sul;east=leste;west=oeste;ahead=à frente;depart=partir;delay=atraso;cancel=cancelar;gate=portão de embarque;seat=assento;trip=viagem;visit=visitar;explore=explorar;travel=viajar;pack=arrumar a mala;weather=clima;rain=chuva;sun=sol;crowded=lotado;quiet=tranquilo;safe=seguro;dangerous=perigoso;nearby=por perto;downtown=centro"},
-{t:"Histórias do passado",g:"Past simple: regulares (worked) e irregulares (went, saw, ate)",q:"storytime in English for beginners, simple past stories",v:"yesterday=ontem;last night=ontem à noite;last week=semana passada;ago=atrás;then=então;after=depois;before=antes;first=primeiro;finally=finalmente;suddenly=de repente;remember=lembrar;forget=esquecer;happen=acontecer;story=história;memory=lembrança;childhood=infância;young=jovem;old=velho;born=nascido;grow up=crescer;move=mudar-se;start=começar;finish=terminar;stay=ficar;go (went)=ir;come (came)=vir;see (saw)=ver;eat (ate)=comer;drink (drank)=beber;take (took)=pegar;make (made)=fazer;get (got)=conseguir;give (gave)=dar;find (found)=encontrar;think (thought)=pensar;know (knew)=saber;say (said)=dizer;tell (told)=contar;buy (bought)=comprar;have (had)=ter;write (wrote)=escrever;lose (lost)=perder;win (won)=ganhar;feel (felt)=sentir;meet (met)=conhecer;run (ran)=correr;sit (sat)=sentar;wake (woke)=acordar;fall (fell)=cair;break (broke)=quebrar;laugh=rir;cry=chorar;smile=sorrir;surprised=surpreso;scared=assustado;happy=feliz;sad=triste;angry=bravo;excited=animado;bored=entediado;mistake=erro;luck=sorte;party=festa;wedding=casamento;birthday=aniversário;holiday=feriado;accident=acidente;news=notícia;dream=sonho"},
-{t:"Planos e futuro",g:"Going to (planos) vs will (decisões na hora, previsões)",q:"talking about future plans in English, my goals English",v:"tomorrow=amanhã;tonight=hoje à noite;next week=semana que vem;next month=mês que vem;next year=ano que vem;soon=em breve;later=mais tarde;someday=algum dia;future=futuro;hope=esperar;wish=desejar;want=querer;would like=gostaria;expect=esperar (prever);decide=decidir;choose=escolher;promise=prometer;probably=provavelmente;maybe=talvez;definitely=com certeza;sure=certo;possible=possível;impossible=impossível;ready=pronto;prepare=preparar;organize=organizar;invite=convidar;join=participar;apply=candidatar-se;career=carreira;degree=graduação;course=curso;exam=prova;grade=nota;practice=praticar;fluent=fluente;confident=confiante;achieve=alcançar;habit=hábito;challenge=desafio;opportunity=oportunidade;risk=risco;budget=orçamento;invest=investir;rent=aluguel;own=possuir;marry=casar;baby=bebê;kid=criança;retire=aposentar-se;abroad=exterior;dream job=emprego dos sonhos;proud=orgulhoso;worry=preocupar-se;depend=depender;offer=oferecer;accept=aceitar;refuse=recusar;agree=concordar;disagree=discordar;opinion=opinião;believe=acreditar;suppose=supor;imagine=imaginar;guess=chutar;goal=objetivo;dream=sonhar;success=sucesso;fail=falhar;try=tentar;keep going=continuar;progress=progresso"}
-];
-const D=[
-["Segunda","Input compreensível",[[15,"Assista a 1 vídeo do barril sobre {t}, sem legenda em português. Primeira vez: só o sentido geral. Segunda vez: pause nas frases novas. Busca sugerida: “{q}”.",0],[10,"Sentence mining: escolha 3 frases que você entendeu pela metade e crie cartões no Anki (frase inteira, com áudio).",3],[5,"Micro-hábito: descreva em voz alta, em inglês, o que está ao seu redor.",3]]],
-["Terça","Shadowing e chorusing",[[12,"Shadowing: pegue um trecho de 30 segundos sobre {t}, repita junto com o áudio 5 vezes, depois sem olhar a transcrição.",1],[8,"Chorusing: fale a mesma frase em coro com o nativo até igualar ritmo e entonação.",1],[10,"Flashcards: revise os cartões vencidos no Anki.",3]]],
-["Quarta","Interação e roleplay",[[15,"Reassista uma cena que você já viu. Pause e responda os personagens em voz alta, faça perguntas e dê opiniões. Anote o que não soube dizer.",0],[10,"Roleplay com a IA: simule uma situação real de {t}. Peça para ela responder só em inglês simples e corrigir no fim.",3],[5,"Pesquise como falar as lacunas anotadas e crie 2 cartões.",3]]],
-["Quinta","Gramática em uso",[[8,"Tópico da semana: {g}. Leia 10 exemplos e tente achar o padrão antes de ler a regra.",2],[12,"Escrita ativa: escreva 5 a 8 frases sobre {t} usando o tópico. Cole na IA e peça correção com explicação curta.",3],[10,"Flashcards: revise e acrescente as correções como cartões.",3]]],
-["Sexta","Áudio e fala",[[20,"Ouça 1 episódio curto sobre {t} ou sobre rotina e vida cotidiana. Ouça duas vezes: sem pausar e depois pausando para anotar palavras.",2],[10,"Grave 1 minuto resumindo em voz alta o que entendeu. Ouça sua gravação e repita uma versão melhor.",3]]],
-["Sábado","Revisão e vocabulário",[[10,"Flashcards: revise tudo da semana.",3],[10,"Revise as 70+ palavras da lista da semana: fale cada uma dentro de uma frase sua.",3],[10,"Roleplay livre com a IA, sem script, sobre {t}.",3]]],
-["Domingo","Imersão leve",[[20,"Assista a série, vídeo ou ouça podcast por prazer, em inglês, sem pressão. Não pare para estudar.",0],[10,"Diário falado: fale 1 minuto sobre sua semana, em inglês, sem traduzir antes.",3]]]
-];
-let S={};try{S=JSON.parse(localStorage.getItem("ing")||"{}")}catch(e){}
-let cw=0,cd=null;
-const $=i=>document.getElementById(i),save=()=>{try{localStorage.setItem("ing",JSON.stringify(S))}catch(e){}};
-const cnt=w=>D.filter((_,d)=>S[w+"-"+d]).length;
-function upd(){const n=Object.values(S).filter(Boolean).length,p=Math.round(n/56*100);$("p").textContent=p+"%";$("pb").style.width=p+"%";$("pt").textContent=n+" de 56 dias concluídos"}
-function tabs(){$("tabs").innerHTML="";Wk.forEach((w,i)=>{const b=document.createElement("button");b.setAttribute("role","tab");b.setAttribute("aria-selected",i==cw);b.innerHTML="Semana "+(i+1)+"<small>"+cnt(i)+"/7</small>";b.onclick=()=>{cw=i;cd=null;draw()};$("tabs").appendChild(b)})}
-function fill(s,w){return s.replace(/{t}/g,w.t.toLowerCase()).replace(/{g}/g,w.g).replace(/{q}/g,w.q)}
-function draw(){tabs();upd();const w=Wk[cw],V=w.v.split(";").map(x=>x.split("="));
-let h="<h2>Semana "+(cw+1)+": "+w.t+"</h2><div class='g'><b>Gramática:</b> "+w.g+"</div>";
-h+="<details><summary>Vocabulário ("+V.length+" palavras)</summary><ul class='v'>"+V.map(x=>"<li>"+x[0]+" <span>"+x[1]+"</span></li>").join("")+"</ul></details>";
-h+="<h3>Recursos desta semana</h3><ul>"+R.map(r=>"<li>"+r+"</li>").join("")+"<li>Barril de conteúdos: salve numa pasta 5 vídeos e 3 episódios com a busca “"+w.q+"”.</li></ul>";
-h+="<h3>Dias</h3><div class='days'>"+D.map((d,i)=>"<button class='"+(S[cw+"-"+i]?"done":"")+"' aria-expanded='"+(cd===i)+"' data-d='"+i+"'>"+d[0]+"<small>"+(S[cw+"-"+i]?"Concluído":d[1])+"</small></button>").join("")+"</div>";
-if(cd!==null){const d=D[cd],k=cw+"-"+cd;h+="<div class='det'><h4>"+d[0]+": "+d[1]+" (30 min)</h4>"+d[2].map(b=>"<div class='bl'><b>"+b[0]+" min</b><span>"+fill(b[1],w)+"</span><em>Recurso: "+R[b[2]]+"</em></div>").join("")+"<button class='ok' data-k='"+k+"'>"+(S[k]?"Desmarcar dia":"Marcar como concluído")+"</button></div>"}
-$("m").innerHTML=h;
-$("m").querySelectorAll(".days button").forEach(b=>b.onclick=()=>{const i=+b.dataset.d;cd=cd===i?null:i;draw()});
-const ok=$("m").querySelector(".ok");if(ok)ok.onclick=()=>{S[ok.dataset.k]=!S[ok.dataset.k];save();draw()}}
-draw();
-</script></body></html>
+<script src="script.js" defer></script></body></html>
